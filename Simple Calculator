@@ -1,0 +1,28 @@
+#include<iostream>
+using namespace std;
+int main(){
+    int num1,num2;
+    cout<<"Enter the first number: ";
+    cin>>num1;
+    cout<<"\nEnter the second number: ";
+    cin>>num2;
+    char op;
+    cout<<"\nEnter a valid operator: ";
+    cin>>op;
+    switch(op){
+        case '+': cout<<"Sum of the numbers is: "<<num1+num2;
+        break;
+        case '-': cout<<"Difference of the numbers is: "<<num1-num2;
+        break;
+        case '*': cout<<"Product of the numbers is: "<<num1*num2;
+        break;
+        case '/': cout<<"Quotient is: "<<num1/num2;
+        break;
+        case '%': cout<<"Remainder is: "<<num1-num2;
+        break;
+        default: cout<<"Enter a valid operator please(+,-,*,/,%) ";
+        break;
+    }
+    return 0;
+
+}
