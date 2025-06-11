@@ -1,0 +1,160 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Book {
+public:
+    int id;
+    string title;
+    string author;
+    bool isIssued;
+
+    void input() {
+        cout << "Enter Book ID: ";
+        cin >> id;
+        cin.ignore();
+        cout << "Enter Book Title: ";
+        getline(cin, title);
+        cout << "Enter Author Name: ";
+        getline(cin, author);
+        isIssued = false;
+    }
+
+    void display() const {
+        cout << id << " | " << title << " | " << author << " | "
+             << (isIssued ? "Issued" : "Available") << endl;
+    }
+};
+
+vector<Book> loadBooks() {
+    vector<Book> books;
+    ifstream file("library.txt");
+    Book book;
+    while (file >> book.id >> book.isIssued) {
+        file.ignore();
+        getline(file, book.title);
+        getline(file, book.author);
+        books.push_back(book);
+    }
+    return books;
+}
+
+void saveBooks(const vector<Book>& books) {
+    ofstream file("library.txt");
+    for (const auto& book : books) {
+        file << book.id << " " << book.isIssued << endl;
+        file << book.title << endl;
+        file << book.author << endl;
+    }
+}
+
+void addBook(vector<Book>& books) {
+    Book book;
+    book.input();
+    books.push_back(book);
+    cout << "Book added successfully!\n";
+}
+
+void showBooks(const vector<Book>& books) {
+    cout << "\n--- Book List ---\n";
+    for (const auto& book : books)
+        book.display();
+}
+
+void searchBook(const vector<Book>& books) {
+    int id;
+    cout << "Enter Book ID to search: ";
+    cin >> id;
+    for (const auto& book : books) {
+        if (book.id == id) {
+            book.display();
+            return;
+        }
+    }
+    cout << "Book not found.\n";
+}
+
+void issueBook(vector<Book>& books) {
+    int id;
+    cout << "Enter Book ID to issue: ";
+    cin >> id;
+    for (auto& book : books) {
+        if (book.id == id) {
+            if (book.isIssued) {
+                cout << "Book is already issued.\n";
+            } else {
+                book.isIssued = true;
+                cout << "Book issued successfully!\n";
+            }
+            return;
+        }
+    }
+    cout << "Book not found.\n";
+}
+
+void returnBook(vector<Book>& books) {
+    int id;
+    cout << "Enter Book ID to return: ";
+    cin >> id;
+    for (auto& book : books) {
+        if (book.id == id) {
+            if (!book.isIssued) {
+                cout << "Book is not issued.\n";
+            } else {
+                book.isIssued = false;
+                cout << "Book returned successfully!\n";
+            }
+            return;
+        }
+    }
+    cout << "Book not found.\n";
+}
+
+void deleteBook(vector<Book>& books) {
+    int id;
+    cout << "Enter Book ID to delete: ";
+    cin >> id;
+    for (auto it = books.begin(); it != books.end(); ++it) {
+        if (it->id == id) {
+            books.erase(it);
+            cout << "Book deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "Book not found.\n";
+}
+
+int main() {
+    vector<Book> books = loadBooks();
+    int choice;
+
+    do {
+        cout << "\n--- Library Menu ---\n";
+        cout << "1. Add Book\n";
+        cout << "2. Show Books\n";
+        cout << "3. Search Book\n";
+        cout << "4. Issue Book\n";
+        cout << "5. Return Book\n";
+        cout << "6. Delete Book\n";
+        cout << "7. Save & Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addBook(books); break;
+            case 2: showBooks(books); break;
+            case 3: searchBook(books); break;
+            case 4: issueBook(books); break;
+            case 5: returnBook(books); break;
+            case 6: deleteBook(books); break;
+            case 7: saveBooks(books); cout << "Data saved. Goodbye!\n"; break;
+            default: cout << "Invalid choice.\n";
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
